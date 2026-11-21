@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orodha ya Michezo (Sports Manager)</title>
+    <style>
+        /* CSS: Muonekano wa ukurasa */
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        /* Form Styling */
+        .sport-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button.btn-add {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 5px;
+        }
+
+        button.btn-add:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Sports List Styling */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .badge-count {
+            background-color: #dbeafe;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .sports-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sport-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            transition: transform 0.15s ease;
+        }
+
+        .sport-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .sport-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .sport-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .sport-category {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .btn-delete {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚽ Usimamizi wa Michezo</h1>
+        <p class="subtitle">Ongeza aina za michezo unayopenda au inayochezwa</p>
+
+        <!-- Fomu ya kuongeza mchezo -->
+        <form class="sport-form" id="sportForm">
+            <div class="form-group">
+                <label for="sportName">Jina la Mchezo</label>
+                <input type="text" id="sportName" placeholder="Mfano: Mpira wa Miguu, Kikapu, Riadha..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="sportCategory">Kundi la Mchezo (Category)</label>
+                <select id="sportCategory" required>
+                    <option value="Mchezo wa Timu">Mchezo wa Timu (Team Sport)</option>
+                    <option value="Mchezo wa Mtu Mmoja">Mchezo wa Mtu Mmoja (Individual)</option>
+                    <option value="Michezo ya Ndani">Michezo ya Ndani (Indoor)</option>
+                    <option value="Michezo ya Majini">Michezo ya Majini (Water Sport)</option>
+                    <option value="Mchezo wa Kielektroniki">Esports / Gaming</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="playersCount">Idadi ya Wachezaji (Kwa Timu/Mchezo)</label>
+                <input type="number" id="playersCount" min="1" placeholder="Mfano: 11" required>
+            </div>
+
+            <button type="submit" class="btn-add">+ Ongeza Mchezo</button>
+        </form>
+
+        <!-- Sehemu ya kuonyesha orodha -->
+        <div class="list-header">
+            <h2>Orodha ya Michezo</h2>
+            <span class="badge-count" id="totalSports">0 Michezo</span>
+        </div>
+
+        <ul class="sports-list" id="sportsList">
+            <!-- Michezo itaongezwa hapa kupitia JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript: Mantiki ya kuongeza, kuhifadhi na kufuta michezo
+        const sportForm = document.getElementById('sportForm');
+        const sportsList = document.getElementById('sportsList');
+        const totalSports = document.getElementById('totalSports');
+
+        // Pakua data kutoka LocalStorage kama zipo, au tumia mifano ya awali
+        let sports = JSON.parse(localStorage.getItem('mySportsData')) || [
+            { id: 1, name: 'Mpira wa Miguu (Football)', category: 'Mchezo wa Timu', players: 11 },
+            { id: 2, name: 'Mpira wa Kikapu (Basketball)', category: 'Mchezo wa Timu', players: 5 }
+        ];
+
+        // Kazi ya kuonyesha michezo kwenye ukurasa
+        function renderSports() {
+            sportsList.innerHTML = '';
+            totalSports.textContent = `${sports.length} ${sports.length === 1 ? 'Mchezo' : 'Michezo'}`;
+
+            if (sports.length === 0) {
+                sportsList.innerHTML = '<li class="empty-state">Hakuna mchezo uliowekwa bado. Ongeza hapo juu!</li>';
+                return;
+            }
+
+            sports.forEach(sport => {
+                const li = document.createElement('li');
+                li.className = 'sport-item';
+                li.innerHTML = `
+                    <div class="sport-info">
+                        <h3>${sport.name}</h3>
+                        <div class="sport-meta">
+                            <span class="sport-category">${sport.category}</span>
+                            <span>Wachezaji: <strong>${sport.players}</strong></span>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteSport(${sport.id})">Futa</button>
+                `;
+                sportsList.appendChild(li);
+            });
+        }
+
+        // Kazi ya kuongeza mchezo mpya
+        sportForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Zuia ukurasa usijirefresh
+
+            const nameInput = document.getElementById('sportName').value.trim();
+            const categoryInput = document.getElementById('sportCategory').value;
+            const playersInput = document.getElementById('playersCount').value;
+
+            if (!nameInput || !playersInput) return;
+
+            const newSport = {
+                id: Date.now(), // Tumia muda kama ID ya kipekee
+                name: nameInput,
+                category: categoryInput,
+                players: parseInt(playersInput)
+            };
+
+            sports.unshift(newSport); // Weka mchezo mpya juu kabisa
+            saveAndRender();
+            sportForm.reset(); // Safisha fomu
+        });
+
+        // Kazi ya kufuta mchezo
+        function deleteSport(id) {
+            sports = sports.filter(sport => sport.id !== id);
+            saveAndRender();
+        }
+
+        // Hifadhi kwenye browser (LocalStorage) na onyesha upya
+        function saveAndRender() {
+            localStorage.setItem('mySportsData', JSON.stringify(sports));
+            renderSports();
+        }
+
+        // Anzisha ukurasa kwa kuonyesha michezo iliyopo
+        renderSports();
+    </script>
+
+</body>
+</html>
