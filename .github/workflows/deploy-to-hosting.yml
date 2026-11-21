@@ -12,7 +12,7 @@ jobs:
       - name: Trigger approved deployment
         env:
           GH_TOKEN: ${{ secrets.DEPLOY_TRIGGER_TOKEN }}
-          PROJECT_ID: mnuby_shop
+          PROJECT_ID: words_game
         run: |
           curl --fail-with-body --silent --show-error \
             -X POST \
